@@ -47,29 +47,29 @@
     }
 
     .pulse-ring {
-      width: 12px;
-      height: 12px;
-      background: rgba(255, 0, 0, 0.4);
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 0, 0, 0.5);
       border-radius: 50%;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      animation: pulse-ring 1.5s ease-out infinite;
+      animation: pulse-ring 2s ease-out infinite;
       z-index: 1;
     }
 
     @keyframes pulse-ring {
       0% {
         transform: translate(-50%, -50%) scale(1);
-        opacity: 0.6;
+        opacity: 0.8;
       }
       70% {
-        transform: translate(-50%, -50%) scale(2);
+        transform: translate(-50%, -50%) scale(2.5);
         opacity: 0;
       }
       100% {
-        transform: translate(-50%, -50%) scale(2);
+        transform: translate(-50%, -50%) scale(2.5);
         opacity: 0;
       }
     }
@@ -88,8 +88,9 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <script>
-    const lat = 34.12448;  // Example: Oklahoma City
+    const lat = 34.12448;  // Your updated location
     const lon = -97.16362;
+    const apiKey = '08c85c2fb5d1fea2f08defb613de5038'; // Your OpenWeatherMap API key
 
     const map = L.map('map', {
       center: [lat, lon],
@@ -105,14 +106,13 @@
       touchZoom: false,
     });
 
-    // Base map
+    // Base map layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18
     }).addTo(map);
 
-    // OpenWeatherMap Precipitation Layer
-    const apiKey = '08c85c2fb5d1fea2f08defb613de5038'; // Replace with your OpenWeatherMap API key
-    L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`, {
+    // Radar overlay (stable)
+    L.tileLayer(`https://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png?appid=${apiKey}`, {
       maxZoom: 12,
       opacity: 0.7,
       zIndex: 10
