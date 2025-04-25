@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Pulsing Map with Radar</title>
+  <title>Pulsing Dot with Radar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
@@ -88,8 +88,8 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <script>
-    const lat = 35.35737;
-    const lon = -97.81601;
+    const lat = 35.4676; // Example: Oklahoma City (stormy tonight?)
+    const lon = -97.5164;
 
     const map = L.map('map', {
       center: [lat, lon],
@@ -105,19 +105,28 @@
       touchZoom: false,
     });
 
-    // Base layer
+    // Base OSM layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18
     }).addTo(map);
 
-    // Radar overlay (RainViewer - latest frame)
-    L.tileLayer('https://tilecache.rainviewer.com/v2/radar/256/{z}/{x}/{y}/6/1_1.png', {
-      maxZoom: 12,
-      opacity: 0.7,
-      zIndex: 10
-    }).addTo(map);
+    // Fetch the latest radar frame dynamically
+    fetch('https://api.rainviewer.com/public/weather-maps.json')
+      .then(res => res.json())
+      .then(data => {
+        const frame = data.radar.nowcast[data.radar.nowcast.length - 1];
+        const radarLayer = L.tileLayer(
+          `https://tilecache.rainviewer.com/v2/radar/256/{z}/{x}/{y}/${frame}/1_1.png`,
+          {
+            maxZoom: 12,
+            opacity: 0.7,
+            zIndex: 10
+          }
+        );
+        radarLayer.addTo(map);
+      });
 
-    // Pulsing dot marker
+    // Pulsing marker
     const pulseIcon = L.divIcon({
       className: '',
       html: `
