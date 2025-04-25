@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Pulsing Marker Overlay</title>
+  <title>Pulsing Map with Radar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
@@ -27,7 +27,6 @@
       height: 100%;
     }
 
-    /* Pulsing marker styles */
     .pulse-wrapper {
       position: relative;
       width: 20px;
@@ -94,7 +93,7 @@
 
     const map = L.map('map', {
       center: [lat, lon],
-      zoom: 11,
+      zoom: 9,
       zoomControl: false,
       attributionControl: false,
       dragging: false,
@@ -106,10 +105,19 @@
       touchZoom: false,
     });
 
+    // Base layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
+      maxZoom: 18
     }).addTo(map);
 
+    // Radar overlay (RainViewer - latest frame)
+    L.tileLayer('https://tilecache.rainviewer.com/v2/radar/256/{z}/{x}/{y}/6/1_1.png', {
+      maxZoom: 12,
+      opacity: 0.7,
+      zIndex: 10
+    }).addTo(map);
+
+    // Pulsing dot marker
     const pulseIcon = L.divIcon({
       className: '',
       html: `
