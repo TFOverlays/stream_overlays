@@ -16,34 +16,32 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Your original banner + logo styles (unchanged) */
-    .banner {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px 20px;
-      border-radius: 30px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .target-location {
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .logo {
-      position: fixed;
-      bottom: 70px;
-      left: 30px;
-      opacity: 0.75;
-      height: 100px;
-    }
+      .banner {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px 40px; /* Increased padding for a bigger banner */
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .target-location {
+    color: #ffffff;
+    font-size: 28px; /* Increased font size */
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  
+  .logo {
+    position: fixed;
+    bottom: 120px; /* Moved up to accommodate larger banner */
+    left: 30px;
+    opacity: 0.75;
+    height: 150px; /* Increased logo size */
 
     /* Radar map styles */
     #map-container {
