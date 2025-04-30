@@ -7,34 +7,43 @@
       margin: 0;
       overflow: hidden;
       background: transparent;
+      font-family: Arial, sans-serif;
     }
 
     .banner {
       position: fixed;
       bottom: 20px;
       right: 0;
-      width: 50vw; /* half the viewport width */
-      height: 60px; /* thin banner */
-      background: rgba(0, 0, 0, 0.6); /* semi-transparent black */
+      width: 50vw; /* Half the screen width */
+      height: 60px;
+      background: rgba(0, 0, 0, 0.6);
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
+      padding-right: 20px;
       border-radius: 10px 0 0 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .target-location {
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: bold;
     }
 
     .logo {
       position: absolute;
-      bottom: 30px; /* adjust to sit above the banner */
-      right: 20px;
+      bottom: 30px;
+      right: 25px;
       opacity: 0.25;
-      height: 50px; /* adjust size as needed */
+      height: 50px;
     }
   </style>
 </head>
 <body>
 
   <div class="banner">
-    <!-- You can put text or icons here if needed -->
+    <div class="target-location">Target: Tulsa, OK</div>
   </div>
 
   <img src="YOUR_LOGO_URL_HERE.png" class="logo" alt="Logo">
