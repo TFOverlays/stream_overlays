@@ -13,30 +13,29 @@
     .banner {
       position: fixed;
       bottom: 20px;
-      right: 0;
-      width: 50vw; /* Half the screen width */
-      height: 60px;
+      left: 20px;
       background: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      padding-right: 20px;
-      border-radius: 10px 0 0 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      justify-content: center;
     }
 
     .target-location {
       color: #ffffff;
-      font-size: 24px;
+      font-size: 18px;
       font-weight: bold;
+      white-space: nowrap;
     }
 
     .logo {
-      position: absolute;
-      bottom: 30px;
-      right: 25px;
+      position: fixed;
+      bottom: 70px; /* sits directly above the banner */
+      left: 30px;
       opacity: 0.25;
-      height: 50px;
+      height: 50px; /* adjust logo size as needed */
     }
   </style>
 </head>
