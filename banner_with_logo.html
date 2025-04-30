@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .banner {
+      position: fixed;
+      bottom: 20px;
+      right: 0;
+      width: 50vw; /* half the viewport width */
+      height: 60px; /* thin banner */
+      background: rgba(0, 0, 0, 0.6); /* semi-transparent black */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px 0 0 10px;
+    }
+
+    .logo {
+      position: absolute;
+      bottom: 30px; /* adjust to sit above the banner */
+      right: 20px;
+      opacity: 0.25;
+      height: 50px; /* adjust size as needed */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="banner">
+    <!-- You can put text or icons here if needed -->
+  </div>
+
+  <img src="YOUR_LOGO_URL_HERE.png" class="logo" alt="Logo">
+
+</body>
+</html>
