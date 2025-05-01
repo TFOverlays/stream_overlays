@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Twister Fisters Live Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+      font-family: Arial, sans-serif;
+    }
+
+    .banner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 40px;
+      border-radius: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+      color: white;
+    }
+
+    .banner-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .data-line {
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .offline {
+      color: #ff4444;
+      font-weight: bold;
+    }
+
+    .logo {
+      position: fixed;
+      bottom: 130px;
+      left: 30px;
+      opacity: 0.75;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo -->
+  <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo" alt="Logo">
+
+  <!-- Live Data Banner -->
+  <div class="banner">
+    <div class="banner-title">Twister Fisters Live</div>
+    <div class="data-line" id="target">Target: Loading...</div>
+    <div class="data-line" id="temp">Temp: -- °F | Dewpoint: -- °F</div>
+    <div class="data-line" id="wind">Wind: --</div>
+    <div class="data-line" id="heading">Heading: --</div>
+    <div class="data-line offline" id="offline" style="display: none;">⚠️ Offline: Data Feed Unavailable</div>
+  </div>
+
+  <!-- JavaScript for Live API Polling -->
+  <script>
+    let offlineShown = false;
+
+    async function fetchLiveData() {
+      try {
+        const response = await fetch('https://your-api-url.com/overlay'); // Replace with your API endpoint
+
+        if (!response.ok) throw new Error("Non-200 response");
+
+        const data = await response.json();
+
+        // Update fields
+        document.getElementById('target').innerText = `Target: ${data.target}`;
+        document.getElementById('temp').innerText = `Temp: ${data.temp} °F | Dewpoint: ${data.dewpoint} °F`;
+        document.getElementById('wind').innerText = `Wind: ${data.wind}`;
+        document.getElementById('heading').innerText = `Heading: ${data.heading}`;
+        
+        // Hide offline warning
+        document.getElementById('offline').style.display = 'none';
+        offlineShown = false;
+
+      } catch (error) {
+        console.warn("Live data unavailable:", error);
+        
+        if (!offlineShown) {
+          document.getElementById('offline').style.display = 'block';
+          offlineShown = true;
+        }
+      }
+    }
+
+    fetchLiveData();
+    setInterval(fetchLiveData, 5000);
+  </script>
+
+</body>
+</html>
