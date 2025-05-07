@@ -21,23 +21,24 @@
       background: rgba(50, 50, 50, 0.5);
       border-radius: 30px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-      padding: 14px 28px;
+      padding: 16px 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 40px;
-      max-width: 95%;
-      width: auto;
-      flex-wrap: wrap;
+      width: 90%;
+      max-width: 1200px;
+      box-sizing: border-box;
     }
 
     .support-text {
       color: #ffffff;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 500;
-      text-align: left;
-      flex: 1 1 auto;
-      min-width: 250px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      padding-right: 30px;
     }
 
     .venmo {
@@ -59,13 +60,18 @@
       filter: invert(1);
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .support-text {
         font-size: 18px;
+        white-space: normal;
+        text-align: center;
+        padding-right: 0;
       }
-      .venmo {
-        font-size: 18px;
-        padding: 6px 14px;
+
+      .support-banner {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
       }
     }
   </style>
