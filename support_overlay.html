@@ -48,7 +48,8 @@
       align-items: center;
       font-size: 20px;
       font-weight: 600;
-      background-color: #dfe6ed; /* light neutral background */
+      color: #ffffff;
+      background: rgba(240, 240, 240, 0.2); /* lighter gray */
       padding: 8px 20px;
       border-radius: 28px;
       white-space: nowrap;
@@ -56,28 +57,13 @@
 
       animation: spin-drop 1.2s ease-out 0.2s forwards, pulse-glow 4s ease-in-out 1.5s infinite;
       box-shadow: 0 0 10px rgba(100, 180, 255, 0.1);
-      position: relative;
-      overflow: hidden;
     }
 
     .venmo img {
       width: 20px;
       height: 20px;
       margin-right: 10px;
-
-      background: linear-gradient(90deg, rgba(100,180,255,0.8), rgba(180,220,255,0.8));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       filter: invert(1);
-      mix-blend-mode: screen;
-    }
-
-    .venmo-text {
-      background: linear-gradient(90deg, rgba(100,180,255,0.8), rgba(180,220,255,0.8));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 700;
-      letter-spacing: 0.5px;
     }
 
     @keyframes spin-drop {
@@ -101,9 +87,11 @@
     @keyframes pulse-glow {
       0%, 100% {
         box-shadow: 0 0 10px rgba(100, 180, 255, 0.1);
+        text-shadow: 0 0 2px rgba(255,255,255,0.4);
       }
       50% {
-        box-shadow: 0 0 18px rgba(100, 180, 255, 0.35);
+        box-shadow: 0 0 16px rgba(100, 180, 255, 0.35);
+        text-shadow: 0 0 6px rgba(100, 180, 255, 0.6);
       }
     }
 
@@ -145,7 +133,7 @@
     </div>
     <div class="venmo">
       <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/venmo.svg" alt="Venmo" />
-      <span class="venmo-text">@MichaelYurov</span>
+      @twisterfisters
     </div>
   </div>
 
