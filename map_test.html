@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <title>Live Location Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Font Awesome for social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-VvWmTly9KjjzR3IscPzqGf+3+z2jMDCZk9XWGe8P8UmzvBd07GgbZL58mr1U0zMuwDbUL8rx+qJ7kzpZQvZa0A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     body {
@@ -14,10 +19,16 @@
       font-family: Arial, sans-serif;
     }
 
-    .banner {
+    .banner-group {
       position: fixed;
       bottom: 20px;
       left: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .banner {
       background: rgba(0, 0, 0, 0.6);
       padding: 20px 40px;
       border-radius: 40px;
@@ -34,9 +45,28 @@
       white-space: nowrap;
     }
 
+    .social-bar {
+      margin-top: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 500;
+      padding: 10px 40px;
+      border-radius: 30px;
+      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .social-bar i {
+      margin-right: 8px;
+    }
+
     .logo {
       position: fixed;
-      bottom: 120px;
+      bottom: 160px;
       left: 30px;
       opacity: 0.75;
       height: 150px;
@@ -108,8 +138,15 @@
 </head>
 <body>
 
-  <div class="banner">
-    <div class="target-location">Target: Tulsa, OK</div>
+  <div class="banner-group">
+    <div class="banner">
+      <div class="target-location" id="target-text">Target: ...</div>
+    </div>
+    <div class="social-bar">
+      <span><i class="fab fa-x-twitter"></i>@twisterfisters</span>
+      <span><i class="fab fa-youtube"></i>@twisterfisters</span>
+      <span><i class="fab fa-instagram"></i>@twisterfisters</span>
+    </div>
   </div>
 
   <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo" alt="Logo">
@@ -155,7 +192,7 @@
     async function updateLocation() {
       try {
         const res = await fetch('location.json', { cache: 'no-store' });
-        const { lat, lon } = await res.json();
+        const { lat, lon, location } = await res.json();
 
         map.setView([lat, lon]);
 
@@ -164,6 +201,8 @@
         } else {
           marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
         }
+
+        document.getElementById('target-text').innerText = `Target: ${location}`;
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
