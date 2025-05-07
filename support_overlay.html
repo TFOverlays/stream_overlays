@@ -50,6 +50,8 @@
       padding: 8px 16px;
       border-radius: 24px;
       white-space: nowrap;
+
+      animation: spin-drop 1.2s ease-out 0.2s 1;
     }
 
     .venmo img {
@@ -57,6 +59,21 @@
       height: 20px;
       margin-right: 10px;
       filter: invert(1);
+    }
+
+    @keyframes spin-drop {
+      0% {
+        transform: rotate(0deg) scale(2);
+        opacity: 0;
+      }
+      50% {
+        transform: rotate(720deg) scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+      }
     }
 
     @media (max-width: 700px) {
