@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Overlay with Radar + Target</title>
+  <title>Live Location Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
@@ -16,35 +14,34 @@
       font-family: Arial, sans-serif;
     }
 
-  .banner {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 20px 40px; /* Increased padding for a bigger banner */
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .target-location {
-    color: #ffffff;
-    font-size: 40px; /* Increased font size */
-    font-weight: bold;
-    white-space: nowrap;
-  }
-  
-  .logo {
-    position: fixed;
-    bottom: 120px; /* Moved up to accommodate larger banner */
-    left: 30px;
-    opacity: 0.75;
-    height: 150px; /* Increased logo size */
-  }
-    
-    /* Radar map styles */
+    .banner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px 40px;
+      border-radius: 40px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .target-location {
+      color: #ffffff;
+      font-size: 40px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .logo {
+      position: fixed;
+      bottom: 120px;
+      left: 30px;
+      opacity: 0.75;
+      height: 150px;
+    }
+
     #map-container {
       width: 350px;
       height: 350px;
@@ -111,28 +108,20 @@
 </head>
 <body>
 
-  <!-- Your banner (unchanged) -->
   <div class="banner">
     <div class="target-location">Target: Tulsa, OK</div>
   </div>
 
-  <!-- Your logo (unchanged) -->
   <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo" alt="Logo">
 
-  <!-- Radar Map -->
   <div id="map-container">
     <div id="map"></div>
   </div>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const lat = 34.12448;
-    const lon = -97.16362;
-    const apiKey = 'YOUR_OPENWEATHERMAP_API_KEY'; // Replace with your actual key
-
     const map = L.map('map', {
-      center: [lat, lon],
+      center: [0, 0],
       zoom: 9,
       zoomControl: false,
       attributionControl: false,
@@ -149,12 +138,6 @@
       maxZoom: 18
     }).addTo(map);
 
-    L.tileLayer(`https://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png?appid=${apiKey}`, {
-      maxZoom: 12,
-      opacity: 1.0,
-      zIndex: 10
-    }).addTo(map);
-
     const pulseIcon = L.divIcon({
       className: '',
       html: `
@@ -167,7 +150,27 @@
       iconAnchor: [10, 10]
     });
 
-    L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
+    let marker;
+
+    async function updateLocation() {
+      try {
+        const res = await fetch('location.json', { cache: 'no-store' });
+        const { lat, lon } = await res.json();
+
+        map.setView([lat, lon]);
+
+        if (marker) {
+          marker.setLatLng([lat, lon]);
+        } else {
+          marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
+        }
+      } catch (e) {
+        console.error("Failed to fetch GPS location:", e);
+      }
+    }
+
+    updateLocation();
+    setInterval(updateLocation, 10000);
   </script>
 
 </body>
