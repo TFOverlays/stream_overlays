@@ -5,11 +5,8 @@
   <title>Live Location Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Leaflet CSS -->
+  <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <!-- Font Awesome for social icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-VvWmTly9KjjzR3IscPzqGf+3+z2jMDCZk9XWGe8P8UmzvBd07GgbZL58mr1U0zMuwDbUL8rx+qJ7kzpZQvZa0A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     body {
@@ -57,11 +54,18 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
       display: flex;
       gap: 30px;
+    }
+
+    .social-bar span {
+      display: inline-flex;
       align-items: center;
     }
 
-    .social-bar i {
+    .social-bar img {
       margin-right: 8px;
+      width: 20px;
+      height: 20px;
+      filter: invert(1);
     }
 
     .logo {
@@ -143,9 +147,18 @@
       <div class="target-location" id="target-text">Target: ...</div>
     </div>
     <div class="social-bar">
-      <span><i class="fab fa-x-twitter"></i>@twisterfisters</span>
-      <span><i class="fab fa-youtube"></i>@twisterfisters</span>
-      <span><i class="fab fa-instagram"></i>@twisterfisters</span>
+      <span>
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />
+        @twisterfisters
+      </span>
+      <span>
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />
+        @twisterfisters
+      </span>
+      <span>
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />
+        @twisterfisters
+      </span>
     </div>
   </div>
 
@@ -155,6 +168,7 @@
     <div id="map"></div>
   </div>
 
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     const map = L.map('map', {
