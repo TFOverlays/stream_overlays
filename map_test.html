@@ -5,7 +5,6 @@
   <title>Live Location Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
@@ -16,23 +15,19 @@
       font-family: Arial, sans-serif;
     }
 
-    .banner-group {
+    .unified-banner {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .banner {
       background: rgba(0, 0, 0, 0.6);
       padding: 20px 40px;
       border-radius: 40px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      min-width: 650px;
+      gap: 40px;
     }
 
     .target-location {
@@ -43,16 +38,8 @@
     }
 
     .social-bar {
-      margin-top: 8px;
-      background: rgba(0, 0, 0, 0.6);
-      color: #ffffff;
-      font-size: 20px;
-      font-weight: 500;
-      padding: 10px 40px;
-      border-radius: 30px;
-      white-space: nowrap;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
       display: flex;
+      align-items: center;
       gap: 30px;
     }
 
@@ -70,7 +57,7 @@
 
     .logo {
       position: fixed;
-      bottom: 160px;
+      bottom: 180px;
       left: 30px;
       opacity: 0.75;
       height: 150px;
@@ -142,10 +129,8 @@
 </head>
 <body>
 
-  <div class="banner-group">
-    <div class="banner">
-      <div class="target-location" id="target-text">Target: ...</div>
-    </div>
+  <div class="unified-banner">
+    <div class="target-location" id="target-text">Target: ...</div>
     <div class="social-bar">
       <span>
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />
@@ -168,7 +153,6 @@
     <div id="map"></div>
   </div>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     const map = L.map('map', {
