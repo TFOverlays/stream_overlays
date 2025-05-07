@@ -14,33 +14,41 @@
       font-family: Arial, sans-serif;
     }
 
-    .panel-wrapper {
+    .overlay-panel {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .overlay-panel {
       background: rgba(0, 0, 0, 0.6);
       border-radius: 40px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      padding: 20px 40px;
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .logo-inline {
+      height: 100px;
+      opacity: 0.9;
+    }
+
+    .text-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
     }
 
     .target-location {
       color: #ffffff;
-      font-size: 40px;
+      font-size: 36px;
       font-weight: bold;
       white-space: nowrap;
     }
 
     .social-bar {
-      margin-top: 12px;
       display: flex;
-      gap: 30px;
+      gap: 24px;
     }
 
     .social-bar span {
@@ -56,15 +64,6 @@
       width: 20px;
       height: 20px;
       filter: invert(1);
-    }
-
-    .logo {
-      position: absolute;
-      bottom: 140px;
-      left: -20px;
-      height: 120px;
-      opacity: 0.85;
-      z-index: 10;
     }
 
     #map-container {
@@ -133,10 +132,10 @@
 </head>
 <body>
 
-  <div class="panel-wrapper">
-    <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo" alt="Logo">
+  <div class="overlay-panel">
+    <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
 
-    <div class="overlay-panel">
+    <div class="text-group">
       <div class="target-location" id="target-text">Target: ...</div>
       <div class="social-bar">
         <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
