@@ -19,23 +19,25 @@
       left: 50%;
       transform: translateX(-50%);
       background: rgba(50, 50, 50, 0.5);
-      border-radius: 40px;
+      border-radius: 30px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-      padding: 20px 30px;
+      padding: 14px 28px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      max-width: 95%;
+      width: auto;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-      max-width: 90%;
     }
 
     .support-text {
       color: #ffffff;
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 500;
-      text-align: center;
+      text-align: left;
       flex: 1 1 auto;
+      min-width: 250px;
     }
 
     .venmo {
@@ -45,25 +47,25 @@
       font-weight: 600;
       color: #ffffff;
       background: rgba(255, 255, 255, 0.15);
-      padding: 10px 20px;
-      border-radius: 30px;
+      padding: 8px 16px;
+      border-radius: 24px;
       white-space: nowrap;
     }
 
     .venmo img {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       margin-right: 10px;
       filter: invert(1);
     }
 
     @media (max-width: 600px) {
       .support-text {
-        font-size: 20px;
+        font-size: 18px;
       }
-
       .venmo {
         font-size: 18px;
+        padding: 6px 14px;
       }
     }
   </style>
