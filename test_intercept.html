@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay - Audio Synced</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Tornado Intercept Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
@@ -15,6 +15,7 @@
       font-family: Arial, sans-serif;
     }
 
+    /* INTRO ANIMATION */
     #intro {
       position: absolute;
       width: 100%;
@@ -24,6 +25,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
       z-index: 999;
       animation: fadeOutIntro 2s ease-out 4s forwards;
     }
@@ -40,6 +42,19 @@
     }
 
     @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .tornado-icon {
+      width: 100px;
+      height: 100px;
+      animation: spin 2s linear infinite;
+      margin-bottom: 10px;
+      z-index: 2;
+    }
+
+    @keyframes spin {
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
     }
@@ -67,6 +82,7 @@
       }
     }
 
+    /* STATIC OVERLAY */
     .overlay-panel {
       position: fixed;
       bottom: 20px;
@@ -214,13 +230,16 @@
 </head>
 <body>
 
-  <!-- Intro -->
+  <!-- INTRO -->
   <div id="intro">
     <div class="radar-sweep"></div>
-    <h1>🚨 LIVE TORNADO INTERCEPT</h1>
+    <svg class="tornado-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="white">
+      <path d="M2 2c20 0 40 2 60 6-10 8-30 10-40 10s-30-2-20-16zM10 24c14 2 34 2 44 6-10 8-32 6-44 4s-14-6 0-10zM20 38c10 0 20 0 30 4-10 6-20 4-30 2s-10-6 0-6zM26 50c6 2 12 2 18 4-6 6-18 4-18 0z"/>
+    </svg>
+    <h1>LIVE TORNADO INTERCEPT</h1>
   </div>
 
-  <!-- Static Overlay -->
+  <!-- MAIN OVERLAY -->
   <div class="overlay-panel">
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
     <div class="text-group">
@@ -233,24 +252,14 @@
     </div>
   </div>
 
-  <!-- Map -->
+  <!-- MAP -->
   <div id="map-container">
     <div id="map"></div>
   </div>
 
-  <!-- Audio -->
-  <audio id="alert-sound" preload="auto">
-    <source src="impact.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-
-  <!-- Scripts -->
+  <!-- SCRIPT -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Play sound as early as possible
-    const audio = document.getElementById('alert-sound');
-    audio.play().catch(err => console.warn("Autoplay blocked:", err));
-
     const map = L.map('map', {
       center: [0, 0],
       zoom: 9,
@@ -307,5 +316,6 @@
     updateLocation();
     setInterval(updateLocation, 10000);
   </script>
+
 </body>
 </html>
