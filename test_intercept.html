@@ -22,6 +22,7 @@
       width: 100%;
       height: 100%;
       background: radial-gradient(ellipse at center, rgba(150,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -29,13 +30,31 @@
       animation: fadeOutIntro 2s ease-out 4s forwards;
     }
 
+    .radar-sweep {
+      position: absolute;
+      width: 200vmax;
+      height: 200vmax;
+      background: conic-gradient(rgba(255,0,0,0.25) 0deg, rgba(0,0,0,0.05) 60deg, rgba(0,0,0,0.05) 360deg);
+      border-radius: 50%;
+      animation: sweep 4s linear infinite;
+      mix-blend-mode: screen;
+      opacity: 0.25;
+    }
+
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     #intro h1 {
       color: white;
       font-size: 64px;
       font-weight: bold;
       text-align: center;
-      animation: radarPulse 2s infinite;
       letter-spacing: 2px;
+      text-shadow: 0 0 20px red;
+      animation: radarPulse 2s infinite;
+      z-index: 2;
     }
 
     @keyframes radarPulse {
@@ -98,6 +117,12 @@
       align-items: center;
       gap: 15px;
       animation: glowPulse 10s ease-in-out infinite;
+    }
+
+    .target-location::before {
+      content: '⚠️';
+      margin-right: 12px;
+      font-size: 32px;
     }
 
     @keyframes glowPulse {
@@ -200,6 +225,7 @@
 
   <!-- Intro full screen overlay -->
   <div id="intro">
+    <div class="radar-sweep"></div>
     <h1>🚨 LIVE TORNADO INTERCEPT</h1>
   </div>
 
@@ -207,7 +233,7 @@
   <div class="overlay-panel">
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
     <div class="text-group">
-      <div class="target-location" id="target-text">⚠️ ACTIVE INTERCEPT: ...</div>
+      <div class="target-location" id="target-text">ACTIVE INTERCEPT: ...</div>
       <div class="social-bar">
         <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
         <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
@@ -269,7 +295,7 @@
           marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
         }
 
-        document.getElementById('target-text').innerText = `⚠️ ACTIVE INTERCEPT: ${location}`;
+        document.getElementById('target-text').innerText = `ACTIVE INTERCEPT: ${location}`;
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
