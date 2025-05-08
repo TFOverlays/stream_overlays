@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay</title>
+  <title>Live Intercept Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
     body {
@@ -18,20 +19,18 @@
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: rgba(140, 0, 0, 0.85);
+      background: rgba(155, 40, 40, 0.85);
       border-radius: 40px;
-      box-shadow: 0 0 18px rgba(255, 0, 0, 0.7);
+      box-shadow: 0 0 15px rgba(255, 50, 50, 0.4);
       padding: 20px 30px;
       display: flex;
       align-items: center;
       gap: 30px;
-      animation: panel-pulse 3s ease-in-out infinite;
     }
 
     .logo-inline {
       height: 100px;
       opacity: 0.9;
-      filter: drop-shadow(0 0 6px rgba(255, 80, 80, 0.4));
     }
 
     .text-group {
@@ -46,7 +45,7 @@
       font-size: 36px;
       font-weight: bold;
       white-space: nowrap;
-      text-shadow: 0 0 6px rgba(255, 80, 80, 0.9);
+      animation: slideInText 1s ease-out;
     }
 
     .social-bar {
@@ -60,14 +59,13 @@
       font-size: 20px;
       color: #ffffff;
       font-weight: 500;
-      text-shadow: 0 0 4px rgba(255, 80, 80, 0.6);
     }
 
     .social-bar img {
       margin-right: 8px;
       width: 20px;
       height: 20px;
-      filter: invert(1) drop-shadow(0 0 3px rgba(255, 80, 80, 0.7));
+      filter: invert(1);
     }
 
     #map-container {
@@ -78,11 +76,10 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      border: 4px solid rgba(140, 0, 0, 0.6);
+      border: 4px solid rgba(155, 40, 40, 0.85);
       box-shadow:
-        0 0 0 4px rgba(140, 0, 0, 0.6),
-        0 0 15px rgba(255, 0, 0, 0.5);
-      animation: panel-pulse 4s ease-in-out infinite;
+        0 0 0 4px rgba(155, 40, 40, 0.85),
+        0 0 15px rgba(255, 50, 50, 0.4);
     }
 
     #map {
@@ -123,27 +120,24 @@
     }
 
     @keyframes pulse-ring {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.8;
-      }
-      70% {
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 0;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 0;
-      }
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      70% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
     }
 
-    @keyframes panel-pulse {
-      0%, 100% {
-        box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-      }
-      50% {
-        box-shadow: 0 0 25px rgba(255, 0, 0, 0.75);
-      }
+    @keyframes slideInText {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes interceptPulse {
+      0% { text-shadow: 0 0 0 rgba(255, 80, 80, 0); }
+      50% { text-shadow: 0 0 15px rgba(255, 80, 80, 0.8); }
+      100% { text-shadow: 0 0 0 rgba(255, 80, 80, 0); }
+    }
+
+    .pulse-once {
+      animation: interceptPulse 1.2s ease-out;
     }
   </style>
 </head>
@@ -221,6 +215,13 @@
 
     updateLocation();
     setInterval(updateLocation, 10000);
+
+    // Pulse the target text every 10 seconds
+    setInterval(() => {
+      const el = document.getElementById('target-text');
+      el.classList.add('pulse-once');
+      setTimeout(() => el.classList.remove('pulse-once'), 1200);
+    }, 10000);
   </script>
 
 </body>
