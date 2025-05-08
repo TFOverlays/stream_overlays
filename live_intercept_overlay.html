@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Live Intercept Overlay</title>
+  <title>Active Intercept Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
   <style>
     body {
       margin: 0;
@@ -19,9 +17,9 @@
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: rgba(155, 40, 40, 0.85);
+      background: #993d32;
       border-radius: 40px;
-      box-shadow: 0 0 15px rgba(255, 50, 50, 0.4);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       padding: 20px 30px;
       display: flex;
       align-items: center;
@@ -41,11 +39,48 @@
     }
 
     .target-location {
-      color: #ffffff;
+      display: flex;
+      align-items: center;
       font-size: 36px;
       font-weight: bold;
+      color: #fff;
       white-space: nowrap;
-      animation: slideInText 1s ease-out;
+      overflow: hidden;
+    }
+
+    .warning-icon {
+      margin-right: 12px;
+      font-size: 32px;
+    }
+
+    .target-text-slide {
+      display: inline-block;
+      animation: slideInText 1.2s ease-out forwards, glowPulse 2s ease-in-out infinite;
+      animation-delay: 0.3s, 10s;
+      opacity: 0;
+    }
+
+    @keyframes slideInText {
+      from {
+        transform: translateX(-20%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes glowPulse {
+      0% {
+        text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+      }
+      50% {
+        text-shadow: 0 0 12px rgba(255, 100, 100, 0.8);
+      }
+      100% {
+        text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+      }
     }
 
     .social-bar {
@@ -76,10 +111,10 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      border: 4px solid rgba(155, 40, 40, 0.85);
+      border: 4px solid #993d32;
       box-shadow:
-        0 0 0 4px rgba(155, 40, 40, 0.85),
-        0 0 15px rgba(255, 50, 50, 0.4);
+        0 0 0 4px #993d32,
+        0 0 10px rgba(0, 0, 0, 0.3);
     }
 
     #map {
@@ -120,24 +155,18 @@
     }
 
     @keyframes pulse-ring {
-      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-      70% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
-      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
-    }
-
-    @keyframes slideInText {
-      from { transform: translateX(-100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    @keyframes interceptPulse {
-      0% { text-shadow: 0 0 0 rgba(255, 80, 80, 0); }
-      50% { text-shadow: 0 0 15px rgba(255, 80, 80, 0.8); }
-      100% { text-shadow: 0 0 0 rgba(255, 80, 80, 0); }
-    }
-
-    .pulse-once {
-      animation: interceptPulse 1.2s ease-out;
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -147,7 +176,10 @@
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
 
     <div class="text-group">
-      <div class="target-location" id="target-text">⚠️ ACTIVE INTERCEPT: ...</div>
+      <div class="target-location">
+        <span class="warning-icon">⚠️</span>
+        <span class="target-text-slide" id="target-text">ACTIVE INTERCEPT: ...</span>
+      </div>
       <div class="social-bar">
         <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
         <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
@@ -207,7 +239,7 @@
           marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
         }
 
-        document.getElementById('target-text').innerText = `⚠️ ACTIVE INTERCEPT: ${location}`;
+        document.getElementById('target-text').textContent = `ACTIVE INTERCEPT: ${location}`;
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
@@ -215,13 +247,6 @@
 
     updateLocation();
     setInterval(updateLocation, 10000);
-
-    // Pulse the target text every 10 seconds
-    setInterval(() => {
-      const el = document.getElementById('target-text');
-      el.classList.add('pulse-once');
-      setTimeout(() => el.classList.remove('pulse-once'), 1200);
-    }, 10000);
   </script>
 
 </body>
