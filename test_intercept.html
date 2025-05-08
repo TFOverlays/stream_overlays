@@ -15,7 +15,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Intro overlay */
     .intro-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -76,6 +75,7 @@
       to {
         opacity: 0;
         visibility: hidden;
+        pointer-events: none;
       }
     }
 
@@ -83,7 +83,6 @@
       to { opacity: 1; }
     }
 
-    /* Main overlay fades in */
     .main-overlay {
       opacity: 0;
       animation: fadeInMain 1.5s ease-out 5s forwards;
@@ -222,17 +221,16 @@
 </head>
 <body>
 
-  <!-- Fullscreen Radar Intro -->
+  <!-- Intro -->
   <div class="intro-overlay">
     <div class="radar-sweep"></div>
     <div class="intro-text">⚠️ LIVE TORNADO INTERCEPT</div>
   </div>
 
-  <!-- Main Overlay: Map + Logo + Text -->
+  <!-- Main Overlay -->
   <div class="main-overlay">
     <div class="overlay-panel">
       <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
-
       <div class="text-group">
         <div class="target-location">
           <span class="warning-icon">⚠️</span>
@@ -273,12 +271,7 @@
 
     const pulseIcon = L.divIcon({
       className: '',
-      html: `
-        <div class="pulse-wrapper">
-          <div class="pulse-ring"></div>
-          <div class="pulse"></div>
-        </div>
-      `,
+      html: `<div class="pulse-wrapper"><div class="pulse-ring"></div><div class="pulse"></div></div>`,
       iconSize: [20, 20],
       iconAnchor: [10, 10]
     });
@@ -306,6 +299,12 @@
 
     updateLocation();
     setInterval(updateLocation, 10000);
+
+    // Remove intro overlay fully after fade out
+    setTimeout(() => {
+      const intro = document.querySelector('.intro-overlay');
+      if (intro) intro.remove();
+    }, 6000);
   </script>
 
 </body>
