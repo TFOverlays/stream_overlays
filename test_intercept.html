@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Intro Overlay</title>
+  <title>Intercept Overlay with Radar Sweep Text</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
     html, body {
@@ -21,7 +20,7 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background: radial-gradient(ellipse at center, rgba(150,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
+      background: radial-gradient(ellipse at center, rgba(150,0,0,0.3), rgba(0,0,0,0.9));
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -51,7 +50,6 @@
       font-size: 64px;
       font-weight: bold;
       text-align: center;
-      letter-spacing: 2px;
       text-shadow: 0 0 20px red;
       animation: radarPulse 2s infinite;
       z-index: 2;
@@ -70,7 +68,7 @@
       }
     }
 
-    /* Static overlay after intro */
+    /* Static overlay */
     .overlay-panel {
       position: fixed;
       bottom: 20px;
@@ -86,11 +84,11 @@
     }
 
     @keyframes slideIn {
-      0% {
+      from {
         transform: translateX(-60px);
         opacity: 0;
       }
-      100% {
+      to {
         transform: translateX(0);
         opacity: 1;
       }
@@ -109,41 +107,33 @@
     }
 
     .target-location {
-      color: #ffffff;
       font-size: 36px;
       font-weight: bold;
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      animation: glowPulse 10s ease-in-out infinite;
+      display: inline-block;
+      background: conic-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.6), rgba(255,255,255,0.1));
+      background-size: 200% 200%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: radarTextSweep 4s linear infinite;
     }
 
-    .target-location::before {
-      content: '⚠️';
-      margin-right: 12px;
-      font-size: 32px;
-    }
-
-    @keyframes glowPulse {
-      0%, 100% {
-        text-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
-      }
-      50% {
-        text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
-      }
+    @keyframes radarTextSweep {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
     }
 
     .social-bar {
       display: flex;
       gap: 24px;
+      color: #ffffff;
     }
 
     .social-bar span {
       display: inline-flex;
       align-items: center;
       font-size: 20px;
-      color: #ffffff;
       font-weight: 500;
     }
 
@@ -206,30 +196,21 @@
     }
 
     @keyframes pulse-ring {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.8;
-      }
-      70% {
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 0;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 0;
-      }
+      0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      70%  { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Intro full screen overlay -->
+  <!-- Intro -->
   <div id="intro">
     <div class="radar-sweep"></div>
     <h1>🚨 LIVE TORNADO INTERCEPT</h1>
   </div>
 
-  <!-- Static overlay -->
+  <!-- Overlay -->
   <div class="overlay-panel">
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
     <div class="text-group">
@@ -247,7 +228,6 @@
     <div id="map"></div>
   </div>
 
-  <!-- Leaflet -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     const map = L.map('map', {
