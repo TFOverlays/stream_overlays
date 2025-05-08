@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Mode Overlay</title>
+  <title>Intercept Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
@@ -14,58 +14,60 @@
       font-family: Arial, sans-serif;
     }
 
-    .banner-group {
+    .overlay-panel {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .banner {
-      background: rgba(180, 0, 0, 0.8);
-      padding: 20px 40px;
+      background: rgba(140, 0, 0, 0.85);
       border-radius: 40px;
-      box-shadow: 0 0 20px rgba(255, 50, 50, 0.6);
+      box-shadow: 0 0 18px rgba(255, 0, 0, 0.7);
+      padding: 20px 30px;
       display: flex;
       align-items: center;
+      gap: 30px;
+      animation: panel-pulse 3s ease-in-out infinite;
+    }
+
+    .logo-inline {
+      height: 100px;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 6px rgba(255, 80, 80, 0.4));
+    }
+
+    .text-group {
+      display: flex;
+      flex-direction: column;
       justify-content: center;
-      animation: pulse-red 2.5s ease-in-out infinite;
+      gap: 10px;
     }
 
     .target-location {
       color: #ffffff;
-      font-size: 40px;
+      font-size: 36px;
       font-weight: bold;
       white-space: nowrap;
-      text-shadow: 0 0 8px rgba(255, 80, 80, 0.9);
+      text-shadow: 0 0 6px rgba(255, 80, 80, 0.9);
     }
 
     .social-bar {
-      margin-top: 10px;
-      background: rgba(100, 0, 0, 0.7);
-      color: #ffffff;
+      display: flex;
+      gap: 24px;
+    }
+
+    .social-bar span {
+      display: inline-flex;
+      align-items: center;
       font-size: 20px;
-      font-weight: 500;
-      padding: 10px 40px;
-      border-radius: 30px;
-      white-space: nowrap;
-      box-shadow: 0 0 10px rgba(255, 80, 80, 0.5);
-    }
-
-    .social-bar i {
-      margin-right: 8px;
       color: #ffffff;
+      font-weight: 500;
+      text-shadow: 0 0 4px rgba(255, 80, 80, 0.6);
     }
 
-    .logo {
-      position: fixed;
-      bottom: 160px;
-      left: 30px;
-      opacity: 0.85;
-      height: 150px;
-      filter: drop-shadow(0 0 10px rgba(255, 80, 80, 0.5));
+    .social-bar img {
+      margin-right: 8px;
+      width: 20px;
+      height: 20px;
+      filter: invert(1) drop-shadow(0 0 3px rgba(255, 80, 80, 0.7));
     }
 
     #map-container {
@@ -73,11 +75,14 @@
       height: 350px;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
       position: absolute;
       bottom: 20px;
       right: 20px;
-      animation: pulse-red 4s ease-in-out infinite;
+      border: 4px solid rgba(140, 0, 0, 0.6);
+      box-shadow:
+        0 0 0 4px rgba(140, 0, 0, 0.6),
+        0 0 15px rgba(255, 0, 0, 0.5);
+      animation: panel-pulse 4s ease-in-out infinite;
     }
 
     #map {
@@ -132,30 +137,30 @@
       }
     }
 
-    @keyframes pulse-red {
+    @keyframes panel-pulse {
       0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
       }
       50% {
-        box-shadow: 0 0 40px rgba(255, 0, 0, 0.7);
+        box-shadow: 0 0 25px rgba(255, 0, 0, 0.75);
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="banner-group">
-    <div class="banner">
-      <div class="target-location" id="target-text">⚠️ ACTIVE INTERCEPT: Tulsa, OK</div>
-    </div>
-    <div class="social-bar">
-      <i class="fab fa-x-twitter"></i> @twisterfisters &nbsp;&nbsp;
-      <i class="fab fa-youtube"></i> @twisterfisters &nbsp;&nbsp;
-      <i class="fab fa-instagram"></i> @twisterfisters
+  <div class="overlay-panel">
+    <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
+
+    <div class="text-group">
+      <div class="target-location" id="target-text">⚠️ ACTIVE INTERCEPT: ...</div>
+      <div class="social-bar">
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />@twisterfisters</span>
+      </div>
     </div>
   </div>
-
-  <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo" alt="Logo">
 
   <div id="map-container">
     <div id="map"></div>
