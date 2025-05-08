@@ -15,7 +15,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Intro */
     #intro {
       position: absolute;
       width: 100%;
@@ -68,7 +67,6 @@
       }
     }
 
-    /* Static Overlay */
     .overlay-panel {
       position: fixed;
       bottom: 20px;
@@ -239,6 +237,12 @@
   <div id="map-container">
     <div id="map"></div>
   </div>
+
+  <!-- Audio -->
+  <audio id="alert-sound" autoplay>
+    <source src="impact.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
   <!-- Leaflet + GPS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
