@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay with Radar Sweep Text</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intercept Overlay with Reverse Radar Sweep</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <style>
     html, body {
       margin: 0;
@@ -15,7 +14,7 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Intro screen */
+    /* Intro animation */
     #intro {
       position: absolute;
       width: 100%;
@@ -35,14 +34,14 @@
       height: 200vmax;
       background: conic-gradient(rgba(255,0,0,0.25) 0deg, rgba(0,0,0,0.05) 60deg, rgba(0,0,0,0.05) 360deg);
       border-radius: 50%;
-      animation: sweep 4s linear infinite;
+      animation: sweep 4s linear infinite reverse;
       mix-blend-mode: screen;
       opacity: 0.25;
     }
 
     @keyframes sweep {
       from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      to   { transform: rotate(360deg); }
     }
 
     #intro h1 {
@@ -56,8 +55,8 @@
     }
 
     @keyframes radarPulse {
-      0% { text-shadow: 0 0 5px red; }
-      50% { text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+      0%   { text-shadow: 0 0 5px red; }
+      50%  { text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
       100% { text-shadow: 0 0 5px red; }
     }
 
@@ -68,7 +67,6 @@
       }
     }
 
-    /* Static overlay */
     .overlay-panel {
       position: fixed;
       bottom: 20px;
@@ -84,14 +82,8 @@
     }
 
     @keyframes slideIn {
-      from {
-        transform: translateX(-60px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      from { transform: translateX(-60px); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
     }
 
     .logo-inline {
@@ -107,21 +99,34 @@
     }
 
     .target-location {
+      position: relative;
       font-size: 36px;
       font-weight: bold;
       white-space: nowrap;
-      display: inline-block;
-      background: conic-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.6), rgba(255,255,255,0.1));
-      background-size: 200% 200%;
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      animation: radarTextSweep 4s linear infinite;
+      color: white;
+    }
+
+    .target-location::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: conic-gradient(
+        from 270deg,
+        rgba(255, 0, 0, 0) 0deg,
+        rgba(255, 0, 0, 0.25) 20deg,
+        rgba(255, 0, 0, 0) 40deg
+      );
+      animation: radarTextSweep 4s linear infinite reverse;
+      mix-blend-mode: screen;
+      pointer-events: none;
     }
 
     @keyframes radarTextSweep {
-      0%   { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
     }
 
     .social-bar {
@@ -284,6 +289,5 @@
     updateLocation();
     setInterval(updateLocation, 10000);
   </script>
-
 </body>
 </html>
