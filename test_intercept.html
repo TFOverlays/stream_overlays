@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay with Reverse Radar Sweep</title>
+  <title>Intercept Overlay with Beam Effect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
   <style>
     html, body {
       margin: 0;
@@ -14,7 +15,7 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Intro animation */
+    /* Intro */
     #intro {
       position: absolute;
       width: 100%;
@@ -37,11 +38,6 @@
       animation: sweep 4s linear infinite reverse;
       mix-blend-mode: screen;
       opacity: 0.25;
-    }
-
-    @keyframes sweep {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
     }
 
     #intro h1 {
@@ -67,6 +63,7 @@
       }
     }
 
+    /* Static Overlay */
     .overlay-panel {
       position: fixed;
       bottom: 20px;
@@ -104,29 +101,28 @@
       font-weight: bold;
       white-space: nowrap;
       color: white;
+      overflow: hidden;
     }
 
     .target-location::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: -50%;
-      width: 200%;
-      height: 100%;
-      background: conic-gradient(
-        from 270deg,
-        rgba(255, 0, 0, 0) 0deg,
-        rgba(255, 0, 0, 0.25) 20deg,
-        rgba(255, 0, 0, 0) 40deg
-      );
-      animation: radarTextSweep 4s linear infinite reverse;
-      mix-blend-mode: screen;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(30deg,
+        transparent 40%,
+        rgba(255, 0, 0, 0.3) 50%,
+        transparent 60%);
+      animation: beam-sweep 4s linear infinite;
       pointer-events: none;
+      mix-blend-mode: screen;
     }
 
-    @keyframes radarTextSweep {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+    @keyframes beam-sweep {
+      from { transform: translateX(-50%); }
+      to   { transform: translateX(50%); }
     }
 
     .social-bar {
@@ -215,7 +211,7 @@
     <h1>🚨 LIVE TORNADO INTERCEPT</h1>
   </div>
 
-  <!-- Overlay -->
+  <!-- Static Overlay -->
   <div class="overlay-panel">
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
     <div class="text-group">
