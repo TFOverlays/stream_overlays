@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay - Audio Enabled</title>
+  <title>Intercept Overlay - Audio Synced</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
@@ -217,7 +217,7 @@
   <!-- Intro -->
   <div id="intro">
     <div class="radar-sweep"></div>
-    <h1>LIVE TORNADO INTERCEPT</h1>
+    <h1>🚨 LIVE TORNADO INTERCEPT</h1>
   </div>
 
   <!-- Static Overlay -->
@@ -239,7 +239,7 @@
   </div>
 
   <!-- Audio -->
-  <audio id="alert-sound">
+  <audio id="alert-sound" preload="auto">
     <source src="impact.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
@@ -247,13 +247,9 @@
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Play alert sound after load
-    window.addEventListener('load', () => {
-      const audio = document.getElementById('alert-sound');
-      setTimeout(() => {
-        audio.play().catch(err => console.warn("Autoplay blocked:", err));
-      }, 200);
-    });
+    // Play sound as early as possible
+    const audio = document.getElementById('alert-sound');
+    audio.play().catch(err => console.warn("Autoplay blocked:", err));
 
     const map = L.map('map', {
       center: [0, 0],
@@ -311,6 +307,5 @@
     updateLocation();
     setInterval(updateLocation, 10000);
   </script>
-
 </body>
 </html>
