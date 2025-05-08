@@ -2,28 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Active Intercept Overlay</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intercept Overlay - Audio Synced</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
   <style>
-    body {
+    html, body {
       margin: 0;
-      overflow: hidden;
+      padding: 0;
       background: transparent;
+      overflow: hidden;
       font-family: Arial, sans-serif;
+    }
+
+    #intro {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(150,0,0,0.3), rgba(0,0,0,0.9));
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      animation: fadeOutIntro 2s ease-out 4s forwards;
+    }
+
+    .radar-sweep {
+      position: absolute;
+      width: 200vmax;
+      height: 200vmax;
+      background: conic-gradient(rgba(255,0,0,0.25) 0deg, rgba(0,0,0,0.05) 60deg, rgba(0,0,0,0.05) 360deg);
+      border-radius: 50%;
+      animation: sweep 4s linear infinite;
+      mix-blend-mode: screen;
+      opacity: 0.25;
+    }
+
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    #intro h1 {
+      color: white;
+      font-size: 64px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 0 0 20px red;
+      animation: radarPulse 2s infinite;
+      z-index: 2;
+    }
+
+    @keyframes radarPulse {
+      0%   { text-shadow: 0 0 5px red; }
+      50%  { text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+      100% { text-shadow: 0 0 5px red; }
+    }
+
+    @keyframes fadeOutIntro {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
     }
 
     .overlay-panel {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: #993d32;
+      background: #8B3D3D;
       border-radius: 40px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       padding: 20px 30px;
       display: flex;
       align-items: center;
       gap: 30px;
+      animation: slideIn 1.2s ease-out 2s both;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-60px); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
     }
 
     .logo-inline {
@@ -39,60 +99,51 @@
     }
 
     .target-location {
-      display: flex;
-      align-items: center;
       font-size: 36px;
       font-weight: bold;
-      color: #fff;
       white-space: nowrap;
-      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      color: white;
     }
 
-    .warning-icon {
-      margin-right: 12px;
-      font-size: 32px;
+    .target-location::before {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      color: transparent;
+      background: linear-gradient(
+        30deg,
+        transparent 40%,
+        rgba(255, 0, 0, 0.35) 50%,
+        transparent 60%
+      );
+      background-size: 200% 100%;
+      background-position: 100% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: textBeamSweepReverse 4s linear infinite;
+      pointer-events: none;
     }
 
-    .target-text-slide {
-      display: inline-block;
-      animation: slideInText 1.2s ease-out forwards, glowPulse 2s ease-in-out infinite;
-      animation-delay: 0.3s, 10s;
-      opacity: 0;
-    }
-
-    @keyframes slideInText {
-      from {
-        transform: translateX(-20%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    @keyframes glowPulse {
-      0% {
-        text-shadow: 0 0 0px rgba(255, 255, 255, 0);
-      }
-      50% {
-        text-shadow: 0 0 12px rgba(255, 100, 100, 0.8);
-      }
-      100% {
-        text-shadow: 0 0 0px rgba(255, 255, 255, 0);
-      }
+    @keyframes textBeamSweepReverse {
+      0%   { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
     }
 
     .social-bar {
       display: flex;
       gap: 24px;
+      color: #ffffff;
     }
 
     .social-bar span {
       display: inline-flex;
       align-items: center;
       font-size: 20px;
-      color: #ffffff;
       font-weight: 500;
     }
 
@@ -111,9 +162,9 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      border: 4px solid #993d32;
+      border: 4px solid #8B3D3D;
       box-shadow:
-        0 0 0 4px #993d32,
+        0 0 0 4px #8B3D3D,
         0 0 10px rgba(0, 0, 0, 0.3);
     }
 
@@ -155,31 +206,25 @@
     }
 
     @keyframes pulse-ring {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.8;
-      }
-      70% {
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 0;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 0;
-      }
+      0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      70%  { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Intro -->
+  <div id="intro">
+    <div class="radar-sweep"></div>
+    <h1>LIVE TWISTER FISTING</h1>
+  </div>
+
+  <!-- Static Overlay -->
   <div class="overlay-panel">
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
-
     <div class="text-group">
-      <div class="target-location">
-        <span class="warning-icon">⚠️</span>
-        <span class="target-text-slide" id="target-text">ACTIVE INTERCEPT: ...</span>
-      </div>
+      <div class="target-location" id="target-text" data-text="ACTIVELY FISTING: ...">ACTIVELY FISTING: ...</div>
       <div class="social-bar">
         <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
         <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
@@ -188,12 +233,24 @@
     </div>
   </div>
 
+  <!-- Map -->
   <div id="map-container">
     <div id="map"></div>
   </div>
 
+  <!-- Audio -->
+  <audio id="alert-sound" preload="auto">
+    <source src="impact.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
+    // Play sound as early as possible
+    const audio = document.getElementById('alert-sound');
+    audio.play().catch(err => console.warn("Autoplay blocked:", err));
+
     const map = L.map('map', {
       center: [0, 0],
       zoom: 9,
@@ -239,7 +296,9 @@
           marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
         }
 
-        document.getElementById('target-text').textContent = `ACTIVE INTERCEPT: ${location}`;
+        const textEl = document.getElementById('target-text');
+        textEl.textContent = `ACTIVELY FISTING: ${location}`;
+        textEl.setAttribute('data-text', `ACTIVELY FISTING: ${location}`);
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
@@ -248,6 +307,5 @@
     updateLocation();
     setInterval(updateLocation, 10000);
   </script>
-
 </body>
 </html>
