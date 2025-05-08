@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay - Reversed Beam Sweep</title>
+  <title>Intercept Overlay - Audio Enabled</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
@@ -239,14 +239,22 @@
   </div>
 
   <!-- Audio -->
-  <audio id="alert-sound" autoplay>
+  <audio id="alert-sound">
     <source src="impact.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
-  <!-- Leaflet + GPS -->
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
+    // Play alert sound after load
+    window.addEventListener('load', () => {
+      const audio = document.getElementById('alert-sound');
+      setTimeout(() => {
+        audio.play().catch(err => console.warn("Autoplay blocked:", err));
+      }, 200);
+    });
+
     const map = L.map('map', {
       center: [0, 0],
       zoom: 9,
@@ -303,5 +311,6 @@
     updateLocation();
     setInterval(updateLocation, 10000);
   </script>
+
 </body>
 </html>
