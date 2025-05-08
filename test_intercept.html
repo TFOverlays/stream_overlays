@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay with Beam-in-Text</title>
+  <title>Intercept Overlay - Reversed Beam Sweep</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
@@ -124,16 +124,16 @@
         transparent 60%
       );
       background-size: 200% 100%;
-      background-position: -100% 0;
+      background-position: 100% 0;
       -webkit-background-clip: text;
       background-clip: text;
-      animation: textBeamSweep 4s linear infinite;
+      animation: textBeamSweepReverse 4s linear infinite;
       pointer-events: none;
     }
 
-    @keyframes textBeamSweep {
-      0%   { background-position: -100% 0; }
-      100% { background-position: 100% 0; }
+    @keyframes textBeamSweepReverse {
+      0%   { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
     }
 
     .social-bar {
