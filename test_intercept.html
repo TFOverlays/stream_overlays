@@ -2,103 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Overlay with Radar Intro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACTIVE INTERCEPT Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
+      background: transparent;
       overflow: hidden;
-      background: #000;
       font-family: Arial, sans-serif;
     }
 
-    .intro-overlay {
+    /* Fullscreen intro animation */
+    #intro {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle, #330000 0%, #000 80%);
+      inset: 0;
+      background: #6b0000;
       display: flex;
-      justify-content: center;
       align-items: center;
-      z-index: 9999;
-      animation: fadeOutOverlay 1.5s ease-out 4.5s forwards;
-    }
-
-    .radar-sweep {
-      position: absolute;
-      width: 150vmax;
-      height: 150vmax;
-      background: conic-gradient(rgba(255,0,0,0.25) 0deg, rgba(0,0,0,0.05) 60deg, rgba(0,0,0,0.05) 360deg);
-      border-radius: 50%;
-      animation: sweep 4s linear infinite;
-      mix-blend-mode: screen;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeOutIntro 2s ease-out 4s forwards;
     }
 
     .intro-text {
-      color: #fff;
-      font-size: 48px;
+      font-size: 64px;
       font-weight: bold;
-      text-align: center;
-      letter-spacing: 2px;
-      text-shadow: 0 0 8px red;
-      animation: zoomGlow 2.5s ease-out forwards;
+      color: white;
+      text-shadow: 0 0 20px black;
+      animation: slideIn 1.2s ease-out;
     }
 
-    @keyframes sweep {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes zoomGlow {
-      0% {
-        transform: scale(0.5);
+    @keyframes slideIn {
+      from {
+        transform: translateY(-100px);
         opacity: 0;
-        text-shadow: 0 0 2px rgba(255,0,0,0.3);
       }
-      50% {
-        transform: scale(1.1);
+      to {
+        transform: translateY(0);
         opacity: 1;
-        text-shadow: 0 0 15px rgba(255,0,0,0.7);
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-        text-shadow: 0 0 6px rgba(255,0,0,0.5);
       }
     }
 
-    @keyframes fadeOutOverlay {
+    @keyframes fadeOutIntro {
       to {
         opacity: 0;
         visibility: hidden;
-        pointer-events: none;
       }
-    }
-
-    @keyframes fadeInMain {
-      to { opacity: 1; }
-    }
-
-    .main-overlay {
-      opacity: 0;
-      animation: fadeInMain 1.5s ease-out 5s forwards;
     }
 
     .overlay-panel {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: #993d32;
+      background: #a33a30;
       border-radius: 40px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       padding: 20px 30px;
       display: flex;
       align-items: center;
       gap: 30px;
+      z-index: 10;
     }
 
     .logo-inline {
@@ -114,22 +78,28 @@
     }
 
     .target-location {
-      display: flex;
-      align-items: center;
+      color: #ffffff;
       font-size: 36px;
       font-weight: bold;
-      color: #fff;
       white-space: nowrap;
-      overflow: hidden;
+      display: flex;
+      align-items: center;
+      animation: pulseGlow 10s ease-in-out infinite;
     }
 
-    .warning-icon {
+    .target-location::before {
+      content: '⚠️';
       margin-right: 12px;
       font-size: 32px;
     }
 
-    .target-text-slide {
-      display: inline-block;
+    @keyframes pulseGlow {
+      0%, 100% {
+        text-shadow: 0 0 0 rgba(255,255,255,0.8);
+      }
+      50% {
+        text-shadow: 0 0 15px rgba(255,255,255,1);
+      }
     }
 
     .social-bar {
@@ -160,9 +130,9 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      border: 4px solid #993d32;
+      border: 4px solid rgba(163, 58, 48, 0.8);
       box-shadow:
-        0 0 0 4px #993d32,
+        0 0 0 4px rgba(163, 58, 48, 0.8),
         0 0 10px rgba(0, 0, 0, 0.3);
     }
 
@@ -221,26 +191,19 @@
 </head>
 <body>
 
-  <!-- Intro -->
-  <div class="intro-overlay">
-    <div class="radar-sweep"></div>
-    <div class="intro-text">⚠️ LIVE TORNADO INTERCEPT</div>
+  <div id="intro">
+    <div class="intro-text">⚠️ ACTIVE TORNADO INTERCEPT</div>
   </div>
 
-  <!-- Main Overlay -->
-  <div class="main-overlay">
-    <div class="overlay-panel">
-      <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
-      <div class="text-group">
-        <div class="target-location">
-          <span class="warning-icon">⚠️</span>
-          <span class="target-text-slide" id="target-text">ACTIVE INTERCEPT: ...</span>
-        </div>
-        <div class="social-bar">
-          <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
-          <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
-          <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />@twisterfisters</span>
-        </div>
+  <div class="overlay-panel">
+    <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
+
+    <div class="text-group">
+      <div class="target-location" id="target-text">Target: ...</div>
+      <div class="social-bar">
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />@twisterfisters</span>
       </div>
     </div>
   </div>
@@ -271,7 +234,12 @@
 
     const pulseIcon = L.divIcon({
       className: '',
-      html: `<div class="pulse-wrapper"><div class="pulse-ring"></div><div class="pulse"></div></div>`,
+      html: `
+        <div class="pulse-wrapper">
+          <div class="pulse-ring"></div>
+          <div class="pulse"></div>
+        </div>
+      `,
       iconSize: [20, 20],
       iconAnchor: [10, 10]
     });
@@ -291,7 +259,7 @@
           marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
         }
 
-        document.getElementById('target-text').textContent = `ACTIVE INTERCEPT: ${location}`;
+        document.getElementById('target-text').innerText = `ACTIVE INTERCEPT: ${location}`;
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
@@ -299,12 +267,6 @@
 
     updateLocation();
     setInterval(updateLocation, 10000);
-
-    // Remove intro overlay fully after fade out
-    setTimeout(() => {
-      const intro = document.querySelector('.intro-overlay');
-      if (intro) intro.remove();
-    }, 6000);
   </script>
 
 </body>
