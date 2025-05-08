@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Intercept Intro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intercept Overlay with Radar Intro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
@@ -11,51 +11,64 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: transparent;
+      background: #000;
       font-family: Arial, sans-serif;
     }
 
     /* Intro overlay */
-    .intro-screen {
+    .intro-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 9999;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle, #330000 0%, #000 80%);
       display: flex;
       justify-content: center;
       align-items: center;
-      animation: fadeOutOverlay 2s ease-in 2.2s forwards;
+      z-index: 9999;
+      animation: fadeOutOverlay 1.5s ease-out 4.5s forwards;
+    }
+
+    .radar-sweep {
+      position: absolute;
+      width: 150vmax;
+      height: 150vmax;
+      background: conic-gradient(rgba(255,0,0,0.25) 0deg, rgba(0,0,0,0.05) 60deg, rgba(0,0,0,0.05) 360deg);
+      border-radius: 50%;
+      animation: sweep 4s linear infinite;
+      mix-blend-mode: screen;
     }
 
     .intro-text {
-      color: white;
+      color: #fff;
       font-size: 48px;
       font-weight: bold;
-      letter-spacing: 2px;
       text-align: center;
-      opacity: 0;
-      transform: translateY(-100%);
-      animation: slideFlash 2s ease-out forwards;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px red;
+      animation: zoomGlow 2.5s ease-out forwards;
     }
 
-    @keyframes slideFlash {
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes zoomGlow {
       0% {
-        transform: translateY(-100%);
+        transform: scale(0.5);
         opacity: 0;
+        text-shadow: 0 0 2px rgba(255,0,0,0.3);
       }
-      40% {
-        transform: translateY(0);
+      50% {
+        transform: scale(1.1);
         opacity: 1;
-        text-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
-      }
-      70% {
-        text-shadow: 0 0 0px rgba(255, 0, 0, 0);
+        text-shadow: 0 0 15px rgba(255,0,0,0.7);
       }
       100% {
-        opacity: 0;
+        transform: scale(1);
+        opacity: 1;
+        text-shadow: 0 0 6px rgba(255,0,0,0.5);
       }
     }
 
@@ -66,7 +79,16 @@
       }
     }
 
-    /* Active Intercept Panel */
+    @keyframes fadeInMain {
+      to { opacity: 1; }
+    }
+
+    /* Main overlay fades in */
+    .main-overlay {
+      opacity: 0;
+      animation: fadeInMain 1.5s ease-out 5s forwards;
+    }
+
     .overlay-panel {
       position: fixed;
       bottom: 20px;
@@ -78,14 +100,6 @@
       display: flex;
       align-items: center;
       gap: 30px;
-      opacity: 0;
-      animation: fadeInMain 1s ease-in 2.5s forwards;
-    }
-
-    @keyframes fadeInMain {
-      to {
-        opacity: 1;
-      }
     }
 
     .logo-inline {
@@ -208,22 +222,27 @@
 </head>
 <body>
 
-  <div class="intro-screen">
+  <!-- Fullscreen Radar Intro -->
+  <div class="intro-overlay">
+    <div class="radar-sweep"></div>
     <div class="intro-text">⚠️ LIVE TORNADO INTERCEPT</div>
   </div>
 
-  <div class="overlay-panel">
-    <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
+  <!-- Main Overlay: Map + Logo + Text -->
+  <div class="main-overlay">
+    <div class="overlay-panel">
+      <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
 
-    <div class="text-group">
-      <div class="target-location">
-        <span class="warning-icon">⚠️</span>
-        <span class="target-text-slide" id="target-text">ACTIVE INTERCEPT: ...</span>
-      </div>
-      <div class="social-bar">
-        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
-        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
-        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />@twisterfisters</span>
+      <div class="text-group">
+        <div class="target-location">
+          <span class="warning-icon">⚠️</span>
+          <span class="target-text-slide" id="target-text">ACTIVE INTERCEPT: ...</span>
+        </div>
+        <div class="social-bar">
+          <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
+          <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
+          <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />@twisterfisters</span>
+        </div>
       </div>
     </div>
   </div>
