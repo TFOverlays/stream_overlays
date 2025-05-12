@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Active Intercept + Donation</title>
+  <title>Actively Fisting Overlay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
@@ -15,12 +15,12 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Intro Animation */
     #intro {
       position: absolute;
       width: 100%;
       height: 100%;
       background: radial-gradient(ellipse at center, rgba(150,0,0,0.3), rgba(0,0,0,0.9));
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -55,8 +55,8 @@
     }
 
     @keyframes radarPulse {
-      0% { text-shadow: 0 0 5px red; }
-      50% { text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+      0%   { text-shadow: 0 0 5px red; }
+      50%  { text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
       100% { text-shadow: 0 0 5px red; }
     }
 
@@ -67,7 +67,6 @@
       }
     }
 
-    /* Static Overlay */
     .overlay-panel {
       position: fixed;
       bottom: 20px;
@@ -79,12 +78,13 @@
       display: flex;
       align-items: center;
       gap: 30px;
-      animation: slideIn 1.2s ease-out 2s both;
+      opacity: 0;
+      animation: fadeInPanel 1.2s ease-out 4s forwards;
     }
 
-    @keyframes slideIn {
-      from { transform: translateX(-60px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+    @keyframes fadeInPanel {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
 
     .logo-inline {
@@ -95,6 +95,7 @@
     .text-group {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       gap: 10px;
     }
 
@@ -102,8 +103,9 @@
       font-size: 36px;
       font-weight: bold;
       white-space: nowrap;
-      color: white;
       position: relative;
+      z-index: 1;
+      color: white;
     }
 
     .target-location::before {
@@ -114,7 +116,12 @@
       width: 100%;
       height: 100%;
       color: transparent;
-      background: linear-gradient(30deg, transparent 40%, rgba(255, 0, 0, 0.35) 50%, transparent 60%);
+      background: linear-gradient(
+        30deg,
+        transparent 40%,
+        rgba(255, 0, 0, 0.35) 50%,
+        transparent 60%
+      );
       background-size: 200% 100%;
       background-position: 100% 0;
       -webkit-background-clip: text;
@@ -131,7 +138,7 @@
     .social-bar {
       display: flex;
       gap: 24px;
-      color: #fff;
+      color: #ffffff;
     }
 
     .social-bar span {
@@ -200,72 +207,9 @@
     }
 
     @keyframes pulse-ring {
-      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-      70% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+      0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      70%  { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
       100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
-    }
-
-    /* Donation Banner */
-    .support-banner {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #8B3D3D;
-      border-radius: 30px;
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: calc(100% - 40px);
-      max-width: none;
-      box-sizing: border-box;
-      flex-wrap: wrap;
-      gap: 16px;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-    }
-
-    .support-banner.visible {
-      opacity: 1;
-    }
-
-    .support-text {
-      color: #ffffff;
-      font-size: 24px;
-      font-weight: 500;
-      flex: 1 1 auto;
-    }
-
-    .venmo {
-      display: inline-flex;
-      align-items: center;
-      font-size: 20px;
-      font-weight: 600;
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 20px;
-      border-radius: 28px;
-      white-space: nowrap;
-      animation: pulse-glow 4s ease-in-out 2s infinite;
-    }
-
-    .venmo img {
-      width: 20px;
-      height: 20px;
-      margin-right: 10px;
-      filter: invert(1);
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% {
-        box-shadow: 0 0 10px rgba(255, 190, 190, 0.1);
-        text-shadow: 0 0 2px rgba(255,255,255,0.4);
-      }
-      50% {
-        box-shadow: 0 0 16px rgba(255, 190, 190, 0.35);
-        text-shadow: 0 0 6px rgba(255, 190, 190, 0.6);
-      }
     }
   </style>
 </head>
@@ -291,25 +235,17 @@
   </div>
 
   <!-- Map -->
-  <div id="map-container"><div id="map"></div></div>
-
-  <!-- Donation Banner -->
-  <div class="support-banner" id="donationBanner">
-    <div class="support-text">
-      Actively fisting — your support helps keep us in the field covering dangerous storms.
-    </div>
-    <div class="venmo">
-      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/venmo.svg" alt="Venmo" />
-      @MichaelYurov
-    </div>
+  <div id="map-container">
+    <div id="map"></div>
   </div>
 
   <!-- Audio -->
   <audio id="alert-sound" preload="auto">
     <source src="impact.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
 
-  <!-- JS -->
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     const audio = document.getElementById('alert-sound');
@@ -335,7 +271,12 @@
 
     const pulseIcon = L.divIcon({
       className: '',
-      html: `<div class="pulse-wrapper"><div class="pulse-ring"></div><div class="pulse"></div></div>`,
+      html: `
+        <div class="pulse-wrapper">
+          <div class="pulse-ring"></div>
+          <div class="pulse"></div>
+        </div>
+      `,
       iconSize: [20, 20],
       iconAnchor: [10, 10]
     });
@@ -346,9 +287,14 @@
       try {
         const res = await fetch('location.json', { cache: 'no-store' });
         const { lat, lon, location } = await res.json();
+
         map.setView([lat, lon]);
-        if (marker) marker.setLatLng([lat, lon]);
-        else marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
+
+        if (marker) {
+          marker.setLatLng([lat, lon]);
+        } else {
+          marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
+        }
 
         const textEl = document.getElementById('target-text');
         textEl.textContent = `ACTIVELY FISTING: ${location}`;
@@ -360,15 +306,6 @@
 
     updateLocation();
     setInterval(updateLocation, 10000);
-
-    // Donation Banner
-    const banner = document.getElementById('donationBanner');
-    function cycleBanner() {
-      banner.classList.add('visible');
-      setTimeout(() => banner.classList.remove('visible'), 15000);
-    }
-    cycleBanner();
-    setInterval(cycleBanner, 180000);
   </script>
 </body>
 </html>
