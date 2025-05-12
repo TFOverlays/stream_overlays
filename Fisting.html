@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Active Intercept + Donation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Intro Animation */
+    #intro {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(150,0,0,0.3), rgba(0,0,0,0.9));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      animation: fadeOutIntro 2s ease-out 4s forwards;
+    }
+
+    .radar-sweep {
+      position: absolute;
+      width: 200vmax;
+      height: 200vmax;
+      background: conic-gradient(rgba(255,0,0,0.25) 0deg, rgba(0,0,0,0.05) 60deg, rgba(0,0,0,0.05) 360deg);
+      border-radius: 50%;
+      animation: sweep 4s linear infinite;
+      mix-blend-mode: screen;
+      opacity: 0.25;
+    }
+
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    #intro h1 {
+      color: white;
+      font-size: 64px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 0 0 20px red;
+      animation: radarPulse 2s infinite;
+      z-index: 2;
+    }
+
+    @keyframes radarPulse {
+      0% { text-shadow: 0 0 5px red; }
+      50% { text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+      100% { text-shadow: 0 0 5px red; }
+    }
+
+    @keyframes fadeOutIntro {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    /* Static Overlay */
+    .overlay-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #8B3D3D;
+      border-radius: 40px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      animation: slideIn 1.2s ease-out 2s both;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-60px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .logo-inline {
+      height: 100px;
+      opacity: 0.9;
+    }
+
+    .text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .target-location {
+      font-size: 36px;
+      font-weight: bold;
+      white-space: nowrap;
+      color: white;
+      position: relative;
+    }
+
+    .target-location::before {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      color: transparent;
+      background: linear-gradient(30deg, transparent 40%, rgba(255, 0, 0, 0.35) 50%, transparent 60%);
+      background-size: 200% 100%;
+      background-position: 100% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: textBeamSweepReverse 4s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes textBeamSweepReverse {
+      0%   { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    .social-bar {
+      display: flex;
+      gap: 24px;
+      color: #fff;
+    }
+
+    .social-bar span {
+      display: inline-flex;
+      align-items: center;
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .social-bar img {
+      margin-right: 8px;
+      width: 20px;
+      height: 20px;
+      filter: invert(1);
+    }
+
+    #map-container {
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      overflow: hidden;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      border: 4px solid #8B3D3D;
+      box-shadow:
+        0 0 0 4px #8B3D3D,
+        0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .pulse-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .pulse {
+      width: 12px;
+      height: 12px;
+      background-color: #f00;
+      border: 2px solid white;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    .pulse-ring {
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 0, 0, 0.5);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-ring 2s ease-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      70% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+    }
+
+    /* Donation Banner */
+    .support-banner {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #8B3D3D;
+      border-radius: 30px;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: calc(100% - 40px);
+      max-width: none;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      gap: 16px;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .support-banner.visible {
+      opacity: 1;
+    }
+
+    .support-text {
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 500;
+      flex: 1 1 auto;
+    }
+
+    .venmo {
+      display: inline-flex;
+      align-items: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 20px;
+      border-radius: 28px;
+      white-space: nowrap;
+      animation: pulse-glow 4s ease-in-out 2s infinite;
+    }
+
+    .venmo img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      filter: invert(1);
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 0 10px rgba(255, 190, 190, 0.1);
+        text-shadow: 0 0 2px rgba(255,255,255,0.4);
+      }
+      50% {
+        box-shadow: 0 0 16px rgba(255, 190, 190, 0.35);
+        text-shadow: 0 0 6px rgba(255, 190, 190, 0.6);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Intro -->
+  <div id="intro">
+    <div class="radar-sweep"></div>
+    <h1>LIVE FISTING</h1>
+  </div>
+
+  <!-- Static Overlay -->
+  <div class="overlay-panel">
+    <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
+    <div class="text-group">
+      <div class="target-location" id="target-text" data-text="ACTIVELY FISTING: ...">ACTIVELY FISTING: ...</div>
+      <div class="social-bar">
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X" />@twisterfisters</span>
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" />@twisterfisters</span>
+        <span><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />@twisterfisters</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div id="map-container"><div id="map"></div></div>
+
+  <!-- Donation Banner -->
+  <div class="support-banner" id="donationBanner">
+    <div class="support-text">
+      Actively fisting — your support helps keep us in the field covering dangerous storms.
+    </div>
+    <div class="venmo">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/venmo.svg" alt="Venmo" />
+      @MichaelYurov
+    </div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="alert-sound" preload="auto">
+    <source src="impact.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const audio = document.getElementById('alert-sound');
+    audio.play().catch(err => console.warn("Autoplay blocked:", err));
+
+    const map = L.map('map', {
+      center: [0, 0],
+      zoom: 9,
+      zoomControl: false,
+      attributionControl: false,
+      dragging: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      boxZoom: false,
+      keyboard: false,
+      tap: false,
+      touchZoom: false
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18
+    }).addTo(map);
+
+    const pulseIcon = L.divIcon({
+      className: '',
+      html: `<div class="pulse-wrapper"><div class="pulse-ring"></div><div class="pulse"></div></div>`,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+
+    let marker;
+
+    async function updateLocation() {
+      try {
+        const res = await fetch('location.json', { cache: 'no-store' });
+        const { lat, lon, location } = await res.json();
+        map.setView([lat, lon]);
+        if (marker) marker.setLatLng([lat, lon]);
+        else marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
+
+        const textEl = document.getElementById('target-text');
+        textEl.textContent = `ACTIVELY FISTING: ${location}`;
+        textEl.setAttribute('data-text', `ACTIVELY FISTING: ${location}`);
+      } catch (e) {
+        console.error("Failed to fetch GPS location:", e);
+      }
+    }
+
+    updateLocation();
+    setInterval(updateLocation, 10000);
+
+    // Donation Banner
+    const banner = document.getElementById('donationBanner');
+    function cycleBanner() {
+      banner.classList.add('visible');
+      setTimeout(() => banner.classList.remove('visible'), 15000);
+    }
+    cycleBanner();
+    setInterval(cycleBanner, 180000);
+  </script>
+</body>
+</html>
