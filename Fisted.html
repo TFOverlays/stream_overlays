@@ -358,8 +358,10 @@
 
     async function updateLocation() {
       try {
-        const res = await fetch('location.json', { cache: 'no-store' });
+        const res = await fetch('https://tfoverlays-default-rtdb.firebaseio.com/location.json');
         const { lat, lon, location } = await res.json();
+
+        console.log("Firebase:", lat, lon, location);
 
         map.setView([lat, lon]);
 
@@ -373,21 +375,20 @@
         textEl.textContent = `FISTED NEAR: ${location}`;
         textEl.setAttribute('data-text', `FISTED NEAR: ${location}`);
       } catch (e) {
-        console.error("Failed to fetch GPS location:", e);
+        console.error("Failed to fetch Firebase location:", e);
       }
     }
 
     updateLocation();
     setInterval(updateLocation, 10000);
 
-    // Donation banner cycle
     const banner = document.getElementById('donationBanner');
     function cycleBanner() {
       banner.classList.add('visible');
-      setTimeout(() => banner.classList.remove('visible'), 15000); // show 15s
+      setTimeout(() => banner.classList.remove('visible'), 15000);
     }
-    cycleBanner(); // initial
-    setInterval(cycleBanner, 180000); // every 3 min
+    cycleBanner();
+    setInterval(cycleBanner, 180000);
   </script>
 </body>
 </html>
