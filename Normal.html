@@ -7,10 +7,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
-    body {
+    html, body {
       margin: 0;
-      overflow: hidden;
+      padding: 0;
       background: transparent;
+      overflow: hidden;
       font-family: Arial, sans-serif;
     }
 
@@ -18,7 +19,7 @@
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: #333333;
+      background: #333;
       border-radius: 40px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       padding: 20px 30px;
@@ -74,9 +75,9 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      border: 4px solid #333333;
+      border: 4px solid #333;
       box-shadow:
-        0 0 0 4px #333333,
+        0 0 0 4px #333,
         0 0 10px rgba(0, 0, 0, 0.3);
     }
 
@@ -123,13 +124,12 @@
       100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
     }
 
-    /* Donation Banner Styles */
     .support-banner {
       position: fixed;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #333333;
+      background: #333;
       border-radius: 30px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
       padding: 16px 32px;
@@ -269,7 +269,8 @@
           marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
         }
 
-        document.getElementById('target-text').innerText = `Target: ${location}`;
+        const textEl = document.getElementById('target-text');
+        textEl.textContent = `Target: ${location}`;
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
@@ -278,15 +279,13 @@
     updateLocation();
     setInterval(updateLocation, 10000);
 
-    // Donation Banner Logic
+    // Donation banner cycle
     const banner = document.getElementById('donationBanner');
-
     function cycleBanner() {
       banner.classList.add('visible');
-      setTimeout(() => banner.classList.remove('visible'), 15000); // show 15s
+      setTimeout(() => banner.classList.remove('visible'), 15000); // 15s
     }
-
-    cycleBanner(); // initial
+    cycleBanner();
     setInterval(cycleBanner, 180000); // every 3 min
   </script>
 
