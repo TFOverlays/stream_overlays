@@ -7,11 +7,10 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background: transparent;
       overflow: hidden;
+      background: transparent;
       font-family: Arial, sans-serif;
     }
 
@@ -19,7 +18,7 @@
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: #333;
+      background: #333333;
       border-radius: 40px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       padding: 20px 30px;
@@ -75,9 +74,9 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      border: 4px solid #333;
+      border: 4px solid #333333;
       box-shadow:
-        0 0 0 4px #333,
+        0 0 0 4px #333333,
         0 0 10px rgba(0, 0, 0, 0.3);
     }
 
@@ -129,7 +128,7 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #333;
+      background: #333333;
       border-radius: 30px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
       padding: 16px 32px;
@@ -137,7 +136,6 @@
       align-items: center;
       justify-content: space-between;
       width: calc(100% - 40px);
-      max-width: none;
       box-sizing: border-box;
       flex-wrap: wrap;
       gap: 16px;
@@ -192,7 +190,7 @@
 </head>
 <body>
 
-  <!-- Static Overlay -->
+  <!-- Main Overlay -->
   <div class="overlay-panel">
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
     <div class="text-group">
@@ -258,7 +256,10 @@
 
     async function updateLocation() {
       try {
-        const res = await fetch('location.json', { cache: 'no-store' });
+        const timestamp = Math.floor(Date.now() / 1000).toString();
+        const filePath = `location.json?time=${timestamp}`;
+
+        const res = await fetch(filePath, { cache: 'no-store' });
         const { lat, lon, location } = await res.json();
 
         map.setView([lat, lon]);
@@ -271,6 +272,7 @@
 
         const textEl = document.getElementById('target-text');
         textEl.textContent = `Target: ${location}`;
+        textEl.setAttribute('data-text', `Target: ${location}`);
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
@@ -279,15 +281,16 @@
     updateLocation();
     setInterval(updateLocation, 10000);
 
-    // Donation banner cycle
+    // Donation banner logic
     const banner = document.getElementById('donationBanner');
+
     function cycleBanner() {
       banner.classList.add('visible');
-      setTimeout(() => banner.classList.remove('visible'), 15000); // 15s
+      setTimeout(() => banner.classList.remove('visible'), 15000);
     }
-    cycleBanner();
-    setInterval(cycleBanner, 180000); // every 3 min
-  </script>
 
+    cycleBanner();
+    setInterval(cycleBanner, 180000);
+  </script>
 </body>
 </html>
