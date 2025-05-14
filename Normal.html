@@ -252,7 +252,7 @@
 
     async function updateLocation() {
       try {
-        const res = await fetch(`location.json?ts=${Date.now()}`); // cache-busting
+        const res = await fetch(`https://raw.githubusercontent.com/your-username/your-repo/main/location.json?ts=${Date.now()}`); // cache-busting
         const { lat, lon, location } = await res.json();
 
         map.setView([lat, lon]);
