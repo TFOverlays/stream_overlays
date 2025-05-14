@@ -244,12 +244,12 @@
 
     const pulseIcon = L.divIcon({
       className: '',
-      html: 
+      html: `
         <div class="pulse-wrapper">
           <div class="pulse-ring"></div>
           <div class="pulse"></div>
         </div>
-      ,
+      `,
       iconSize: [20, 20],
       iconAnchor: [10, 10]
     });
@@ -269,7 +269,7 @@
           marker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
         }
 
-        document.getElementById('target-text').innerText = Target: ${location};
+        document.getElementById('target-text').innerText = `Target: ${location}`;
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
