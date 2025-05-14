@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Live Overlay + Donation Cycle</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Overlay with Debugging</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <style>
     body {
       margin: 0;
@@ -136,6 +135,7 @@
       align-items: center;
       justify-content: space-between;
       width: calc(100% - 40px);
+      max-width: none;
       box-sizing: border-box;
       flex-wrap: wrap;
       gap: 16px;
@@ -219,7 +219,6 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     const map = L.map('map', {
@@ -256,12 +255,15 @@
 
     async function updateLocation() {
       try {
-        const timestamp = Math.floor(Date.now() / 1000).toString();
-        const filePath = `location.json?time=${timestamp}`;
+        const timestamp = Date.now();
+        const url = `location.json?cachebust=${timestamp}`;
+        console.log("Fetching:", url);
 
-        const res = await fetch(filePath, { cache: 'no-store' });
-        const { lat, lon, location } = await res.json();
+        const res = await fetch(url);
+        const data = await res.json();
+        console.log("Fetched data:", data);
 
+        const { lat, lon, location } = data;
         map.setView([lat, lon]);
 
         if (marker) {
@@ -272,7 +274,6 @@
 
         const textEl = document.getElementById('target-text');
         textEl.textContent = `Target: ${location}`;
-        textEl.setAttribute('data-text', `Target: ${location}`);
       } catch (e) {
         console.error("Failed to fetch GPS location:", e);
       }
@@ -281,9 +282,7 @@
     updateLocation();
     setInterval(updateLocation, 10000);
 
-    // Donation banner logic
     const banner = document.getElementById('donationBanner');
-
     function cycleBanner() {
       banner.classList.add('visible');
       setTimeout(() => banner.classList.remove('visible'), 15000);
