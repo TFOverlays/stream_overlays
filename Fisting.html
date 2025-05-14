@@ -116,12 +116,7 @@
       width: 100%;
       height: 100%;
       color: transparent;
-      background: linear-gradient(
-        30deg,
-        transparent 40%,
-        rgba(255, 0, 0, 0.35) 50%,
-        transparent 60%
-      );
+      background: linear-gradient(30deg, transparent 40%, rgba(255, 0, 0, 0.35) 50%, transparent 60%);
       background-size: 200% 100%;
       background-position: 100% 0;
       -webkit-background-clip: text;
@@ -212,7 +207,6 @@
       100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
     }
 
-    /* Support banner */
     .support-banner {
       position: fixed;
       top: 20px;
@@ -324,11 +318,6 @@
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Sound
-    const audio = document.getElementById('alert-sound');
-    audio.play().catch(err => console.warn("Autoplay blocked:", err));
-
-    // Map
     const map = L.map('map', {
       center: [0, 0],
       zoom: 9,
@@ -363,9 +352,10 @@
 
     async function updateLocation() {
       try {
-        const res = await fetch('location.json', { cache: 'no-store' });
+        const res = await fetch('https://tfoverlays-default-rtdb.firebaseio.com/location.json');
         const { lat, lon, location } = await res.json();
 
+        console.log("Fetched from Firebase:", lat, lon, location);
         map.setView([lat, lon]);
 
         if (marker) {
@@ -385,16 +375,14 @@
     updateLocation();
     setInterval(updateLocation, 10000);
 
-    // Donation banner timing
+    // Donation banner
     const banner = document.getElementById('donationBanner');
-
     function cycleBanner() {
       banner.classList.add('visible');
-      setTimeout(() => banner.classList.remove('visible'), 15000); // show 15s
+      setTimeout(() => banner.classList.remove('visible'), 15000);
     }
-
-    cycleBanner(); // initial
-    setInterval(cycleBanner, 180000); // every 3 min
+    cycleBanner();
+    setInterval(cycleBanner, 180000);
   </script>
 </body>
 </html>
