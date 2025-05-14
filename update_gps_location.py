@@ -4,10 +4,9 @@ import json
 import time
 import requests
 
-# Replace with your actual GPS device path
+# GPS device path and Firebase URL
 PORT = '/dev/tty.usbserial-1130'
-ser = serial.Serial(PORT, baudrate=4800, timeout=1)
-
+BAUDRATE = 4800
 FIREBASE_URL = 'https://tfoverlays-default-rtdb.firebaseio.com/location.json'
 prev_coords = None
 
@@ -54,20 +53,26 @@ def push_to_firebase(lat, lon, location):
 
 while True:
     try:
-        line = ser.readline().decode('ascii', errors='replace')
-        if line.startswith('$GPGGA'):
-            msg = pynmea2.parse(line)
-            if msg.gps_qual in [1, 2]:  # Only if GPS fix is valid
-                lat = round(msg.latitude, 5)
-                lon = round(msg.longitude, 5)
+        # Re-open the serial port fresh each cycle
+        with serial.Serial(PORT, baudrate=BAUDRATE, timeout=1) as ser:
+            # Give it a short window to try reading a fix
+            start_time = time.time()
+            while time.time() - start_time < 5:
+                line = ser.readline().decode('ascii', errors='replace')
+                if line.startswith('$GPGGA'):
+                    msg = pynmea2.parse(line)
+                    if msg.gps_qual in [1, 2]:
+                        lat = round(msg.latitude, 5)
+                        lon = round(msg.longitude, 5)
 
-                if (lat, lon) != prev_coords:
-                    location = reverse_geocode(lat, lon)
-                    push_to_firebase(lat, lon, location)
-                    prev_coords = (lat, lon)
-                else:
-                    print(f"No movement: {lat}, {lon}")
-                time.sleep(10)
+                        if (lat, lon) != prev_coords:
+                            location = reverse_geocode(lat, lon)
+                            push_to_firebase(lat, lon, location)
+                            prev_coords = (lat, lon)
+                        else:
+                            print(f"No movement: {lat}, {lon}")
+                        break  # Exit loop once a valid fix is handled
+        time.sleep(10)
     except Exception as e:
         print("Error:", e)
         time.sleep(10)
