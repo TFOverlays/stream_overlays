@@ -6,7 +6,7 @@ import subprocess
 import requests
 
 # Replace with your actual GPS device path
-PORT = '/dev/tty.usbserial-130'  # e.g., '/dev/tty.usbserial-1410'
+PORT = '/dev/tty.usbserial-1130'  # e.g., '/dev/tty.usbserial-1410'
 ser = serial.Serial(PORT, baudrate=4800, timeout=1)
 
 prev_coords = None
@@ -53,8 +53,8 @@ while True:
         if line.startswith('$GPGGA'):
             msg = pynmea2.parse(line)
             if msg.gps_qual in [1, 2]:  # Only update if valid GPS fix
-                lat = msg.latitude
-                lon = msg.longitude
+                lat = round(msg.latitude, 5)
+                lon = round(msg.longitude, 5)
 
                 if (lat, lon) != prev_coords:
                     update_json(lat, lon)
@@ -63,7 +63,7 @@ while True:
                     prev_coords = (lat, lon)
                 else:
                     print(f"No movement: {lat}, {lon}")
-                time.sleep(60)
+                time.sleep(10)
     except Exception as e:
         print("Error:", e)
         time.sleep(10)
