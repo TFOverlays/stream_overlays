@@ -5,7 +5,6 @@
   <title>Live Overlay + Donation Cycle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <style>
     body {
       margin: 0;
@@ -123,7 +122,6 @@
       100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
     }
 
-    /* Donation Banner Styles */
     .support-banner {
       position: fixed;
       top: 20px;
@@ -192,7 +190,6 @@
 </head>
 <body>
 
-  <!-- Static Overlay -->
   <div class="overlay-panel">
     <img src="https://github.com/TFOverlays/stream_overlays/blob/main/fisters_logo.png?raw=true" class="logo-inline" alt="Logo">
     <div class="text-group">
@@ -205,12 +202,10 @@
     </div>
   </div>
 
-  <!-- Map -->
   <div id="map-container">
     <div id="map"></div>
   </div>
 
-  <!-- Donation Banner -->
   <div class="support-banner" id="donationBanner">
     <div class="support-text">
       Love the stream? We’re self-funded and not monetized yet — every bit helps keep us chasing!
@@ -221,7 +216,6 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     const map = L.map('map', {
@@ -258,9 +252,7 @@
 
     async function updateLocation() {
       try {
-        const res = await fetch('https://raw.githubusercontent.com/TFOverlays/stream_overlays/main/location.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error("Failed to fetch location.json");
-
+        const res = await fetch(`location.json?ts=${Date.now()}`); // cache-busting
         const { lat, lon, location } = await res.json();
 
         map.setView([lat, lon]);
@@ -280,16 +272,14 @@
     updateLocation();
     setInterval(updateLocation, 10000);
 
-    // Donation Banner Logic
+    // Donation banner cycle
     const banner = document.getElementById('donationBanner');
-
     function cycleBanner() {
       banner.classList.add('visible');
-      setTimeout(() => banner.classList.remove('visible'), 15000); // show for 15 seconds
+      setTimeout(() => banner.classList.remove('visible'), 15000);
     }
-
-    cycleBanner(); // initial display
-    setInterval(cycleBanner, 180000); // every 3 minutes
+    cycleBanner();
+    setInterval(cycleBanner, 180000);
   </script>
 
 </body>
