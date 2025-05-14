@@ -2,12 +2,13 @@ import serial
 import pynmea2
 import json
 import time
-import subprocess
 import requests
 
+# Replace with your actual GPS device path
 PORT = '/dev/tty.usbserial-1130'
 ser = serial.Serial(PORT, baudrate=4800, timeout=1)
 
+FIREBASE_URL = 'https://tfoverlays-default-rtdb.firebaseio.com/location.json'
 prev_coords = None
 
 def reverse_geocode(lat, lon):
@@ -36,29 +37,33 @@ def reverse_geocode(lat, lon):
         print("Reverse geocode error:", e)
         return "Unknown"
 
-def update_json(lat, lon):
-    location = reverse_geocode(lat, lon)
-    with open('location.json', 'w') as f:
-        json.dump({'lat': lat, 'lon': lon, 'location': location}, f)
-
-def git_push():
-    subprocess.run(["git", "add", "location.json"])
-    subprocess.run(["git", "commit", "--amend", "--no-edit"])
-    subprocess.run(["git", "push", "--force"])
+def push_to_firebase(lat, lon, location):
+    payload = {
+        'lat': lat,
+        'lon': lon,
+        'location': location
+    }
+    try:
+        response = requests.put(FIREBASE_URL, json=payload)
+        if response.status_code == 200:
+            print(f"Pushed to Firebase: {lat}, {lon} - {location}")
+        else:
+            print(f"Failed to push: {response.status_code} - {response.text}")
+    except Exception as e:
+        print("Firebase push error:", e)
 
 while True:
     try:
         line = ser.readline().decode('ascii', errors='replace')
-        if line.startswith('$GPRMC'):
+        if line.startswith('$GPGGA'):
             msg = pynmea2.parse(line)
-            if msg.status == 'A':  # A = data valid
+            if msg.gps_qual in [1, 2]:  # Only if GPS fix is valid
                 lat = round(msg.latitude, 5)
                 lon = round(msg.longitude, 5)
 
                 if (lat, lon) != prev_coords:
-                    update_json(lat, lon)
-                    git_push()
-                    print(f"Pushed: {lat}, {lon}")
+                    location = reverse_geocode(lat, lon)
+                    push_to_firebase(lat, lon, location)
                     prev_coords = (lat, lon)
                 else:
                     print(f"No movement: {lat}, {lon}")
