@@ -258,7 +258,9 @@
 
     async function updateLocation() {
       try {
-        const res = await fetch('location.json', { cache: 'no-store' });
+        const res = await fetch('https://raw.githubusercontent.com/TFOverlays/stream_overlays/main/location.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error("Failed to fetch location.json");
+
         const { lat, lon, location } = await res.json();
 
         map.setView([lat, lon]);
@@ -283,11 +285,11 @@
 
     function cycleBanner() {
       banner.classList.add('visible');
-      setTimeout(() => banner.classList.remove('visible'), 15000); // show 15s
+      setTimeout(() => banner.classList.remove('visible'), 15000); // show for 15 seconds
     }
 
-    cycleBanner(); // initial
-    setInterval(cycleBanner, 180000); // every 3 min
+    cycleBanner(); // initial display
+    setInterval(cycleBanner, 180000); // every 3 minutes
   </script>
 
 </body>
